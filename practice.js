@@ -160,8 +160,8 @@ $('.nav-link').on('click', (e) => {
   $('.navbar-toggler:visible').trigger('click');
 });
 
-//ここから Flickr APIを利用して画像出力
 
+//★ここから Flickr APIを利用して画像出力★
 // Flickr API key
 const apiKey = '950198e7b5c5e2077e95f55ee76e9c55';
 
@@ -191,9 +191,9 @@ const getFlickrText = (photo) => {
   return text;
 };
 
-//★ネコの画像★ここから
+//ネコの画像ここから
 // リクエストパラメータを作る
-const parameters = $.param({
+const parameters_cat = $.param({
   method: 'flickr.photos.search',
   api_key: apiKey,
   text: 'cat', // 検索テキスト
@@ -204,11 +204,13 @@ const parameters = $.param({
   format: 'json', // レスポンスをJSON形式に
   nojsoncallback: 1, // レスポンスの先頭に関数呼び出しを含めない
 });
-const url = `https://api.flickr.com/services/rest/?${parameters}`;
-console.log(url);
+
+const url_cat = `https://api.flickr.com/services/rest/?${parameters_cat}`;
+console.log(url_cat);
+
 
 // 猫の画像を検索して表示
-$.getJSON(url, (data) => {
+$.getJSON(url_cat, (data) => {
   console.log(data);
 
   // データが取得できなかった場合
@@ -253,9 +255,72 @@ $.getJSON(url, (data) => {
   // BootstrapのTooltipを適用
   $('[data-toggle="tooltip"]').tooltip();
 });
-//★ネコの画像★ここまで
+//ネコの画像ここまで
 
-//ここまで Flickr APIを利用して画像出力
+//イヌの画像ここから
+const parameters_dog = $.param({
+  method: 'flickr.photos.search',
+  api_key: apiKey,
+  text: 'dog', // 検索テキスト
+  sort: 'interestingness-desc', // 興味深さ順
+  per_page: 4, // 取得件数
+  license: '4', // Creative Commons Attributionのみ
+  extras: 'owner_name,license', // 追加で取得する情報
+  format: 'json', // レスポンスをJSON形式に
+  nojsoncallback: 1, // レスポンスの先頭に関数呼び出しを含めない
+});
+
+const url_dog = `https://api.flickr.com/services/rest/?${parameters_dog}`;
+console.log(url_dog);
+
+$.getJSON(url_dog, (data) => {
+  console.log(data);
+
+  // データが取得できなかった場合
+  if (data.stat !== 'ok') {
+    console.error('データの取得に失敗しました。');
+    return;
+  }
+
+  // 空の<div>を作る
+  const $div = $('<div>');
+
+  // ヒット件数
+  $div.append(`<div>${data.photos.total} photos in total</div>`);
+
+  for (let i = 0; i < data.photos.photo.length; i++) {
+    const photo = data.photos.photo[i];
+    const photoText = getFlickrText(photo);
+
+    // $divに <a href="..." ...><img src="..." ...></a> を追加する
+    $div.append(
+      $('<a>', {
+        href: getFlickrPageURL(photo),
+        class: 'd-inline-block',
+        target: '_blank', // リンクを新規タブで開く
+        'rel': "noopener noreferrer",
+        'data-toggle': 'tooltip',
+        'data-placement': 'bottom',
+        title: photoText,
+      }).append(
+        $('<img>', {
+          src: getFlickrImageURL(photo, 'q'),
+          width: 150,
+          height: 150,
+          alt: photoText,
+        }),
+      ),
+    );
+  }
+  // $divを.image-gallery__itemに追加する
+  $div.appendTo('.image-gallery__item');
+
+  // BootstrapのTooltipを適用
+  $('[data-toggle="tooltip"]').tooltip();
+});
+//イヌの画像ここまで
+
+//★ここまで Flickr APIを利用して画像出力★
 
 /**
  * ---------------------------------------
