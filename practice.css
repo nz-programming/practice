@@ -99,11 +99,6 @@ body {
   transition: transform 0.1s, -webkit-transform 0.1s;
 }
 
-.image-gallery__item:hover {
-  /* 1.1倍に拡大 */
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
-}
 
 .top {
   /* 子要素でposition:absoluteを使うため必要 */
@@ -360,8 +355,8 @@ footer {
   }
 
   .image-gallery__item {
-    width: 192px;
-    height: 192px;
+    width: 800px;
+    height: 400px;
     border: 21px solid #fff;
     box-shadow: 8px 8px 12px 1px #ccc;
   }
